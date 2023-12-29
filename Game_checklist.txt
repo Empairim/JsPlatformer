@@ -1,5 +1,5 @@
 1. Project set up ✅
-2.Player Creation
+2.Player Creation✅
 3.Gravity
 4.Player Movement
 5.Platforms
