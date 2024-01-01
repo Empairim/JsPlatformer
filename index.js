@@ -1,9 +1,11 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-
 //          CANVAS SIZE
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+// import grassPlatform from "./Assets/Tiles/grass.png";
+// console.log(grassPlatform);
 //        CONSTANTS
 const gravity = 0.5;
 const heroSpeed = 5;
@@ -51,6 +53,16 @@ class Player {
 }
 
 //      PLATOFRM LOGIC
+
+// const platformImages = [
+
+//   "./Assets/Tiles/grass.png",
+//   "./Assets/Tiles/stone.png",
+//   "./Assets/Tiles/box.png",
+//   "./Assets/Tiles/bridge.png",
+//   "./Assets/Tiles/dirtHalf.png",
+
+// ] post MVP
 class Platform {
   constructor({ x, y }) {
     this.position = {
@@ -58,11 +70,18 @@ class Platform {
       y, // 200,
     };
     this.width = 200;
-    this.height = 20;
+    this.height = 25;
+    this.image = document.querySelector("#platform-image");
   }
   draw() {
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // ctx.fillStyle = "red";
+    ctx.drawImage(
+      this.image,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
   }
 }
 
