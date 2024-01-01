@@ -1,6 +1,16 @@
-body{
+body{display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: start;
     margin: 0;
+    margin-top: 40px;
+    background-color: black;
+    background-image: url("https://assets-prd.ignimgs.com/2022/06/09/samsung-xbox-cloud-gaming-1654787693979.jpeg?width=3840");
+    background-size: cover;
+    background-repeat: no-repeat;
+    
 }
 canvas{
+   
     background-color: rgb(48, 48, 48);
 }
