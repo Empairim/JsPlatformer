@@ -81,11 +81,19 @@ function animate() {
     hero.velocity.x = -heroSpeed;
   } else hero.velocity.x = 0;
 
-  ///////
+  //          PLATFORM COLLISION DETECTION
   if (
+    //❕1:check if bottom of hero object is same level as top of platform object postion.y starts at end using .height to find the feet/bottom of hero.
     hero.position.y + hero.height <= platform.position.y &&
-    hero.platform.y + hero.height + hero.velocity.y >= platform.position.y
+    //❕2:checks if hero velocity is below or at same level as top of platform.pretty much checking if in near future will direction hero is moving in will match platforms position to check for collision.
+    hero.position.y + hero.height + hero.velocity.y >= platform.position.y &&
+    //❕3:checks if right edge of hero is to right or at same position as left edge of platform.Same as with height but for the x axis
+    hero.position.x + hero.width >= platform.position.x &&
+    //❕4:checks if left edge of hero is to left or at same postion as right edge of platform.
+
+    hero.position.x <= platform.position.x + platform.width
   ) {
+    //5: stops vertical veclocity if conditons are met
     hero.velocity.y = 0;
   }
 }
