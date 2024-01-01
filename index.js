@@ -65,6 +65,8 @@ class Platform {
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
   }
 }
+
+let scrollOffSet = 0; // WIN SCENARIO
 //            GAME RUN FUNCTION
 // this loop is pretty much how tvs works just keep flickering a still image so fast it looks like its actually moving
 function animate() {
@@ -85,16 +87,18 @@ function animate() {
     hero.velocity.x = 0;
     // gives the illusion of movement
     if (keys.right.pressed) {
+      scrollOffSet += heroSpeed;
       platforms.forEach((platform) => {
         platform.position.x -= heroSpeed;
       });
     } else if (keys.left.pressed) {
+      scrollOffSet -= heroSpeed;
       platforms.forEach((platform) => {
         platform.position.x += heroSpeed;
       });
     }
   }
-
+  // console.log(scrollOffSet);
   //          PLATFORM COLLISION DETECTION
   platforms.forEach((platform) => {
     if (
@@ -112,6 +116,9 @@ function animate() {
       hero.velocity.y = 0;
     }
   });
+  if (scrollOffSet > 1800) {
+    console.log("ya win nerd");
+  }
 }
 //    CLASS INSTANCES
 const hero = new Player();
@@ -128,7 +135,7 @@ animate();
 let isJumpKeyPressed = false;
 //                   destuctrue the event object
 addEventListener("keydown", ({ keyCode }) => {
-  console.log(keyCode);
+  // console.log(keyCode);
   switch (keyCode) {
     case 65: // A key LEFT
       keys.left.pressed = true;
