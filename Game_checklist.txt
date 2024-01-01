@@ -3,7 +3,7 @@
 3.Gravity✅
 4.Player Movement✅
 5.Platforms✅
-6."Scroll" the background
+6."Scroll" the background✅
 7. Win Scenario
 8.Image Platforms
 9.Parallaxx Scrolling

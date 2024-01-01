@@ -52,10 +52,10 @@ class Player {
 
 //      PLATOFRM LOGIC
 class Platform {
-  constructor() {
+  constructor({ x, y }) {
     this.position = {
-      x: 200,
-      y: 200,
+      x, // 200, was hard coded at first to test
+      y, // 200,
     };
     this.width = 200;
     this.height = 20;
@@ -72,34 +72,54 @@ function animate() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); //clears canvas 4 args x,y,w,h
   hero.update();
-  platform.draw();
+  platforms.forEach((platform) => {
+    platform.draw();
+  });
 
-  ////////
-  if (keys.right.pressed) {
+  /// HANDLES KEY OBJECT⏫ AND SETS BORDER FOR HERO/PLAYER
+  if (keys.right.pressed && hero.position.x < 400) {
     hero.velocity.x = heroSpeed;
-  } else if (keys.left.pressed) {
+  } else if (keys.left.pressed && hero.position.x > 100) {
     hero.velocity.x = -heroSpeed;
-  } else hero.velocity.x = 0;
+  } else {
+    hero.velocity.x = 0;
+    // gives the illusion of movement
+    if (keys.right.pressed) {
+      platforms.forEach((platform) => {
+        platform.position.x -= heroSpeed;
+      });
+    } else if (keys.left.pressed) {
+      platforms.forEach((platform) => {
+        platform.position.x += heroSpeed;
+      });
+    }
+  }
 
   //          PLATFORM COLLISION DETECTION
-  if (
-    //❕1:check if bottom of hero object is same level as top of platform object postion.y starts at end using .height to find the feet/bottom of hero.
-    hero.position.y + hero.height <= platform.position.y &&
-    //❕2:checks if hero velocity is below or at same level as top of platform.pretty much checking if in near future will direction hero is moving in will match platforms position to check for collision.
-    hero.position.y + hero.height + hero.velocity.y >= platform.position.y &&
-    //❕3:checks if right edge of hero is to right or at same position as left edge of platform.Same as with height but for the x axis
-    hero.position.x + hero.width >= platform.position.x &&
-    //❕4:checks if left edge of hero is to left or at same postion as right edge of platform.
+  platforms.forEach((platform) => {
+    if (
+      //❕1:check if bottom of hero object is same level as top of platform object position.y starts at end using .height to find the feet/bottom of hero.
+      hero.position.y + hero.height <= platform.position.y &&
+      //❕2:checks if hero velocity is below or at same level as top of platform.pretty much checking if in near future will direction hero is moving in will match platforms position to check for collision.
+      hero.position.y + hero.height + hero.velocity.y >= platform.position.y &&
+      //❕3:checks if right edge of hero is to right or at same position as left edge of platform.Same as with height but for the x axis
+      hero.position.x + hero.width >= platform.position.x &&
+      //❕4:checks if left edge of hero is to left or at same position as right edge of platform.
 
-    hero.position.x <= platform.position.x + platform.width
-  ) {
-    //5: stops vertical veclocity if conditons are met
-    hero.velocity.y = 0;
-  }
+      hero.position.x <= platform.position.x + platform.width
+    ) {
+      //5: stops vertical veclocity if conditons are met
+      hero.velocity.y = 0;
+    }
+  });
 }
 //    CLASS INSTANCES
 const hero = new Player();
-const platform = new Platform();
+// const platform = new Platform(); was testing building
+const platforms = [
+  new Platform({ x: 200, y: 100 }), // thats why set it as object above
+  new Platform({ x: 400, y: 200 }),
+];
 
 //      RUNNING THE GAME
 animate();
