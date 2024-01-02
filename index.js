@@ -4,8 +4,24 @@ const ctx = canvas.getContext("2d");
 canvas.width = 800;
 canvas.height = 470;
 
-// import grassPlatform from "./Assets/Tiles/grass.png";
-// console.log(grassPlatform);
+const heroImage = new Image();
+heroImage.src = "Assets/Player/p1_front.png";
+
+const platformImage = new Image();
+platformImage.src = "./Assets/Tiles/stone.png";
+
+// heroImage.onload = () => {
+//   // Code to execute after the hero image has loaded
+//   console.log("Hero image loaded");
+// };
+
+// platformImage.onload = () => {
+//   // Code to execute after the platform image has loaded
+//   console.log("Platform image loaded");
+// };
+
+// Rest of your game logic goes here
+
 //        CONSTANTS
 const gravity = 0.5;
 const heroSpeed = 5;
@@ -22,9 +38,9 @@ class Player {
       x: 0, //will pull player left right
       y: 0, //this will push player down
     };
-    this.width = 30;
-    this.height = 30;
-    this.image = document.querySelector("#hero-img");
+    this.width = heroImage.width - 25;
+    this.height = heroImage.height - 45;
+    this.image = heroImage;
   }
   //draws the rectangle  takes 4 args x,y,width,height
   draw() {
@@ -60,9 +76,9 @@ class Platform {
       x, // 200, was hard coded at first to test
       y, // 200,
     };
-    this.width = 200;
-    this.height = 25;
-    this.image = document.querySelector("#platform-img");
+    this.width = platformImage.width * 3;
+    this.height = platformImage.height * 3;
+    this.image = platformImage;
   }
   draw() {
     // ctx.fillStyle = "red";
@@ -139,8 +155,8 @@ class PlayerController {
 //                         CLASS INSTANCES
 const hero = new Player();
 const platforms = [
-  new Platform({ x: 200, y: 100 }), // thats why set it as object above
-  new Platform({ x: 400, y: 200 }),
+  new Platform({ x: -1, y: 400 }), // thats why set it as object above
+  new Platform({ x: 210, y: 400 }),
 ];
 const playerController = new PlayerController(hero, platforms, heroSpeed);
 
