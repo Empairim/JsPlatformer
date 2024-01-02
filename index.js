@@ -3,24 +3,30 @@ const ctx = canvas.getContext("2d");
 //          CANVAS SIZE
 canvas.width = 800;
 canvas.height = 470;
+const platFromPath = ".Assets/Tiles/";
+//         IMAGES
 
-const heroImage = new Image();
-heroImage.src = "Assets/Player/p1_front.png";
-
-const platformImage = new Image();
-platformImage.src = "./Assets/Tiles/stone.png";
-
-// heroImage.onload = () => {
-//   // Code to execute after the hero image has loaded
-//   console.log("Hero image loaded");
-// };
-
-// platformImage.onload = () => {
-//   // Code to execute after the platform image has loaded
-//   console.log("Platform image loaded");
-// };
-
-// Rest of your game logic goes here
+// so I dont have to repeat new Image() everytime I need one.
+function createImage(imageSrc) {
+  const image = new Image();
+  image.src = imageSrc;
+  return image;
+}
+const heroImage = createImage("./Assets/Player/p1_front.png");
+const platformImage = createImage(
+  "./Platform Game Assets/Tiles/png/128x128/Dirt.png"
+);
+const box = createImage("./Assets/Tiles/box.png");
+const dirt = createImage("./Assets/Tiles/dirt.png");
+const grass = createImage("./Platform Game Assets/Tiles/png/128x128/Grass.png");
+const stone = createImage("./Assets/Tiles/stone.png");
+const snow = createImage("./Assets/Tiles/snow.png");
+const backgroundImage = createImage(
+  "./Platform Game Assets/Background/png/1920x1080/Background/Background.png"
+);
+const treeImage = createImage(
+  "./Legacy-Fantasy - High Forest 2.3/Trees/Background.png"
+);
 
 //        CONSTANTS
 const gravity = 0.5;
@@ -38,8 +44,8 @@ class Player {
       x: 0, //will pull player left right
       y: 0, //this will push player down
     };
-    this.width = heroImage.width - 25;
-    this.height = heroImage.height - 45;
+    this.width = heroImage.width / 2;
+    this.height = heroImage.height / 2;
     this.image = heroImage;
   }
   //draws the rectangle  takes 4 args x,y,width,height
@@ -71,14 +77,14 @@ class Player {
 //      PLATOFRM LOGIC
 
 class Platform {
-  constructor({ x, y, image }) {
+  constructor({ x, y, image, width, height }) {
     this.position = {
       x, // 200, was hard coded at first to test
       y, // 200,
     };
-    this.width = platformImage.width * 3;
-    this.height = platformImage.height * 3;
-    this.image = platformImage;
+    this.width = width || platformImage.width * 2;
+    this.height = height || platformImage.height * 2;
+    this.image = image || platformImage;
   }
   draw() {
     // ctx.fillStyle = "red";
@@ -91,6 +97,31 @@ class Platform {
     );
   }
 }
+
+// GENERIC OBJECTS/ SCENE
+//new class so scene wont have collision
+class GenericObject {
+  constructor({ x, y, image }) {
+    this.position = {
+      x,
+      y,
+    };
+    this.width = image.width;
+    this.height = image.height;
+    this.image = image;
+  }
+  draw() {
+    // ctx.fillStyle = "red";
+    ctx.drawImage(
+      this.image,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
+  }
+}
+
 //    COLLISION LOGIC
 
 class CollisionManager {
@@ -155,11 +186,20 @@ class PlayerController {
 //                         CLASS INSTANCES
 const hero = new Player();
 const platforms = [
-  new Platform({ x: -1, y: 400 }), // thats why set it as object above
-  new Platform({ x: 210, y: 400 }),
+  new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }), // thats why set it as object above
+  // new Platform({ x: 100, y: 420 }),
+  // new Platform({ x: 200, y: 420 }),
+  // new Platform({ x: 700, y: 420 }),
+  new Platform({ x: 100, y: 100, image: dirt, width: 500, height: 100 }),
 ];
 const playerController = new PlayerController(hero, platforms, heroSpeed);
 
+const genericObjects = [
+  new GenericObject({ x: 0, y: -80, image: backgroundImage }),
+  // new GenericObject({ x: 0, y: 0, image: treeImage }),
+];
+
+//        GAME LOGIC
 let scrollOffSet = 0; // WIN SCENARIO
 //            GAME RUN FUNCTION
 
@@ -168,6 +208,9 @@ function animate() {
   requestAnimationFrame(animate); //recursive loop so the game will keep looping like how we'd do a while loop in pygame
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); //clears canvas 4 args x,y,w,h
+  genericObjects.forEach((genericObject) => {
+    genericObject.draw();
+  });
 
   platforms.forEach((platform) => {
     platform.draw();
