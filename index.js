@@ -7,25 +7,33 @@ const platFromPath = ".Assets/Tiles/";
 //         IMAGES
 
 // so I dont have to repeat new Image() everytime I need one.
+
 function createImage(imageSrc) {
   const image = new Image();
   image.src = imageSrc;
   return image;
 }
+//      CONSTANT IMAGES
 const heroImage = createImage("./Assets/Player/p1_front.png");
 const platformImage = createImage(
   "./Platform Game Assets/Tiles/png/128x128/Dirt.png"
 );
+
+const backgroundImage = createImage(
+  "./Platform Game Assets/Background/png/1920x1080/Background/Background.png"
+);
+
+//
 const box = createImage("./Assets/Tiles/box.png");
 const dirt = createImage("./Assets/Tiles/dirt.png");
 const grass = createImage("./Platform Game Assets/Tiles/png/128x128/Grass.png");
 const stone = createImage("./Assets/Tiles/stone.png");
 const snow = createImage("./Assets/Tiles/snow.png");
-const backgroundImage = createImage(
-  "./Platform Game Assets/Background/png/1920x1080/Background/Background.png"
-);
 const treeImage = createImage(
   "./Legacy-Fantasy - High Forest 2.3/Trees/Background.png"
+);
+const hills = createImage(
+  "./Platform Game Assets/Background/png/1920x1080/Background/hills.png"
 );
 
 //        CONSTANTS
@@ -101,13 +109,13 @@ class Platform {
 // GENERIC OBJECTS/ SCENE
 //new class so scene wont have collision
 class GenericObject {
-  constructor({ x, y, image }) {
+  constructor({ x, y, image, width, height }) {
     this.position = {
       x,
       y,
     };
-    this.width = image.width;
-    this.height = image.height;
+    this.width = width || image.width;
+    this.height = height || image.height;
     this.image = image;
   }
   draw() {
@@ -173,10 +181,16 @@ class PlayerController {
         platforms.forEach((platform) => {
           platform.position.x -= heroSpeed;
         });
+        genericObjects.forEach((genericObject) => {
+          genericObject.position.x -= 3;
+        });
       } else if (this.keys.left.pressed) {
         scrollOffSet -= heroSpeed;
         platforms.forEach((platform) => {
           platform.position.x += heroSpeed;
+        });
+        genericObjects.forEach((genericObject) => {
+          genericObject.position.x += 3;
         });
       }
     }
@@ -186,17 +200,16 @@ class PlayerController {
 //                         CLASS INSTANCES
 const hero = new Player();
 const platforms = [
-  new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }), // thats why set it as object above
-  // new Platform({ x: 100, y: 420 }),
-  // new Platform({ x: 200, y: 420 }),
-  // new Platform({ x: 700, y: 420 }),
+  new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
+  // new Platform({ x: 500, y: 420, image: grass, width: 500, height: 50 }),
   new Platform({ x: 100, y: 100, image: dirt, width: 500, height: 100 }),
 ];
 const playerController = new PlayerController(hero, platforms, heroSpeed);
 
 const genericObjects = [
   new GenericObject({ x: 0, y: -80, image: backgroundImage }),
-  // new GenericObject({ x: 0, y: 0, image: treeImage }),
+
+  new GenericObject({ x: 0, y: 0, image: hills }),
 ];
 
 //        GAME LOGIC
