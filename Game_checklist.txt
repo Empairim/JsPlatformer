@@ -7,6 +7,6 @@
 7. Win Scenario✅
 8.Image Platforms✅
 9.Parallaxx Scrolling✅
-10. Death Pits
+10. Death Pits✅
 11. Level Creation
 12.Fine-Tuning

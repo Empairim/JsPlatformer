@@ -25,7 +25,7 @@ const backgroundImage = createImage(
 
 //
 const box = createImage("./Assets/Tiles/box.png");
-const dirt = createImage("./Assets/Tiles/dirt.png");
+const dirt = createImage("./Platform Game Assets/Tiles/png/128x128/Dirt.png");
 const grass = createImage("./Platform Game Assets/Tiles/png/128x128/Grass.png");
 const stone = createImage("./Assets/Tiles/stone.png");
 const snow = createImage("./Assets/Tiles/snow.png");
@@ -39,6 +39,27 @@ const hills = createImage(
 //        CONSTANTS
 const gravity = 0.5;
 const heroSpeed = 5;
+//      RESETS GAME ⬇️
+// DID THIS TOWARD END
+const init = function () {
+  //                         CLASS INSTANCES
+  hero = new Player();
+  platforms = [
+    new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
+    new Platform({ x: 600, y: 420, image: dirt, width: 500, height: 50 }),
+    new Platform({ x: 300, y: 100, image: grass, width: 500, height: 100 }),
+  ];
+  playerController = new PlayerController(hero, platforms, heroSpeed);
+
+  genericObjects = [
+    new GenericObject({ x: 0, y: -80, image: backgroundImage }),
+
+    new GenericObject({ x: 0, y: 0, image: hills }),
+  ];
+
+  //       GAME LOGIC
+  scrollOffSet = 0; // WIN SCENARIO
+};
 
 //                            CLASSES
 //          PLAYER LOGIC
@@ -50,7 +71,7 @@ class Player {
     };
     this.velocity = {
       x: 0, //will pull player left right
-      y: 0, //this will push player down
+      y: 0, //this will push player up down
     };
     this.width = heroImage.width / 2;
     this.height = heroImage.height / 2;
@@ -78,7 +99,6 @@ class Player {
     if (this.position.y + this.height + this.velocity.y <= canvas.height)
       this.velocity.y += gravity;
     //else it will stop signifiy player is on ground
-    else this.velocity.y = 0;
   }
 }
 
@@ -198,15 +218,15 @@ class PlayerController {
 }
 
 //                         CLASS INSTANCES
-const hero = new Player();
-const platforms = [
+let hero = new Player();
+let platforms = [
   new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
-  // new Platform({ x: 500, y: 420, image: grass, width: 500, height: 50 }),
-  new Platform({ x: 100, y: 100, image: dirt, width: 500, height: 100 }),
+  new Platform({ x: 600, y: 420, image: dirt, width: 500, height: 50 }),
+  new Platform({ x: 300, y: 100, image: grass, width: 500, height: 100 }),
 ];
-const playerController = new PlayerController(hero, platforms, heroSpeed);
+let playerController = new PlayerController(hero, platforms, heroSpeed);
 
-const genericObjects = [
+let genericObjects = [
   new GenericObject({ x: 0, y: -80, image: backgroundImage }),
 
   new GenericObject({ x: 0, y: 0, image: hills }),
@@ -214,9 +234,9 @@ const genericObjects = [
 
 //        GAME LOGIC
 let scrollOffSet = 0; // WIN SCENARIO
+
 //            GAME RUN FUNCTION
 
-// this loop is pretty much how tvs works just keep flickering a still image so fast it looks like its actually moving
 function animate() {
   requestAnimationFrame(animate); //recursive loop so the game will keep looping like how we'd do a while loop in pygame
 
@@ -231,8 +251,14 @@ function animate() {
   hero.update();
   playerController.handleKeyInputs();
   CollisionManager.handleCollisions(hero, platforms);
+
+  //WIN CONDITION
   if (scrollOffSet > 1800) {
     console.log("ya win nerd");
+  }
+  //LOSE CONDITIONS
+  if (hero.position.y > canvas.height) {
+    init();
   }
 }
 
