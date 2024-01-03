@@ -14,7 +14,7 @@ function createImage(imageSrc) {
   return image;
 }
 //      CONSTANT IMAGES
-const heroImage = createImage("./Assets/Player/p1_front.png");
+const heroImage = createImage("./Assets/Player/p1_walk/p1_walk.png");
 const platformImage = createImage(
   "./Platform Game Assets/Tiles/png/128x128/Dirt.png"
 );
@@ -38,28 +38,7 @@ const hills = createImage(
 
 //        CONSTANTS
 const gravity = 0.5;
-const heroSpeed = 5;
-//      RESETS GAME ⬇️
-// DID THIS TOWARD END
-const init = function () {
-  //                         CLASS INSTANCES
-  hero = new Player();
-  platforms = [
-    new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
-    new Platform({ x: 600, y: 420, image: dirt, width: 500, height: 50 }),
-    new Platform({ x: 300, y: 100, image: grass, width: 500, height: 100 }),
-  ];
-  playerController = new PlayerController(hero, platforms, heroSpeed);
-
-  genericObjects = [
-    new GenericObject({ x: 0, y: -80, image: backgroundImage }),
-
-    new GenericObject({ x: 0, y: 0, image: hills }),
-  ];
-
-  //       GAME LOGIC
-  scrollOffSet = 0; // WIN SCENARIO
-};
+const heroSpeed = 9;
 
 //                            CLASSES
 //          PLAYER LOGIC
@@ -67,21 +46,26 @@ class Player {
   constructor() {
     this.position = {
       x: 100, //just starting hori position
-      y: 100, //just starting verti position
+      y: 270, //just starting verti position
     };
     this.velocity = {
       x: 0, //will pull player left right
       y: 0, //this will push player up down
     };
-    this.width = heroImage.width / 2;
-    this.height = heroImage.height / 2;
+    this.width = heroImage.width / 10;
+    this.height = heroImage.height / 10;
     this.image = heroImage;
+    this.frames = 0;
   }
   //draws the rectangle  takes 4 args x,y,width,height
   draw() {
     // ctx.fillStyle = "aqua";
     ctx.drawImage(
       this.image,
+      65, //this is to crop the image top left x position
+      0, //y position
+      65, //this is its width of crop
+      90, //this is the height of crop
       this.position.x,
       this.position.y,
       this.width,
@@ -90,6 +74,8 @@ class Player {
   }
   //to change player functions over time
   update() {
+    this.frames++;
+    if (this.frames > 11) this.frames = 0;
     this.draw();
     //this is going ot connect Player Y to velocity Y then add to it
     this.position.y += this.velocity.y;
@@ -219,18 +205,31 @@ class PlayerController {
 
 //                         CLASS INSTANCES
 let hero = new Player();
-let platforms = [
-  new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
-  new Platform({ x: 600, y: 420, image: dirt, width: 500, height: 50 }),
-  new Platform({ x: 300, y: 100, image: grass, width: 500, height: 100 }),
-];
+let platforms = [];
 let playerController = new PlayerController(hero, platforms, heroSpeed);
 
-let genericObjects = [
-  new GenericObject({ x: 0, y: -80, image: backgroundImage }),
+let genericObjects = [];
 
-  new GenericObject({ x: 0, y: 0, image: hills }),
-];
+//      INITS GAME/RESETS GAME ⬇️
+// DID THIS TOWARD END
+const init = function () {
+  //     CLASS INSTANCES RESETS
+  hero = new Player();
+  platforms = [
+    new Platform({ x: -1, y: 420, image: grass, width: 500, height: 50 }),
+    new Platform({ x: 600, y: 420, image: dirt, width: 500, height: 50 }),
+    new Platform({ x: 400, y: 200, image: grass, width: 500, height: 50 }),
+  ];
+  playerController = new PlayerController(hero, platforms, heroSpeed);
+
+  genericObjects = [
+    new GenericObject({ x: 0, y: -80, image: backgroundImage }),
+
+    new GenericObject({ x: 0, y: 0, image: hills }),
+  ];
+
+  scrollOffSet = 0; // WIN SCENARIO
+};
 
 //        GAME LOGIC
 let scrollOffSet = 0; // WIN SCENARIO
@@ -261,7 +260,7 @@ function animate() {
     init();
   }
 }
-
+init();
 //      RUNNING THE GAME
 animate();
 
@@ -280,8 +279,9 @@ addEventListener("keydown", ({ keyCode }) => {
       playerController.keys.right.pressed = true;
       break;
     case 87: // W key UP
-      if (!isJumpKeyPressed && hero.velocity.y <= 1) {
-        hero.velocity.y -= 20;
+      if (!isJumpKeyPressed && hero.velocity.y <= 1 && hero.position.y >= 10) {
+        //checks if the player is already at the top of the screen and if so disables jump
+        hero.velocity.y -= 15;
         isJumpKeyPressed = true; // Set the flag
         console.log("Jump");
       } else isJumpKeyPressed = false;
